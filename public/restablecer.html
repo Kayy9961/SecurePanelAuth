@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recuperar Contraseña</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --primary-color: #007BFF;
+      --hover-color: #0056b3;
+      --background-gradient: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      --card-bg: #ffffff;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      --text-color: #333;
+      --border-color: #e0e0e0;
+      --radius: 8px;
+      --transition-speed: 0.3s;
+      --error-color: #ff4f4f;
+      --success-color: #49d295;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--background-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      text-align: center;
+      width: 400px;
+      animation: fadeIn var(--transition-speed) ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="email"] {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: border var(--transition-speed), box-shadow var(--transition-speed);
+    }
+
+    input[type="email"]:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    button {
+      padding: 0.75rem;
+      background: var(--primary-color);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background var(--transition-speed);
+    }
+
+    button:hover {
+      background: var(--hover-color);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+      transition: color var(--transition-speed);
+    }
+
+    a:hover {
+      color: var(--hover-color);
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: 500;
+      display: none; 
+    }
+
+    .error {
+      color: var(--error-color);
+    }
+    .success {
+      color: var(--success-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Recuperar Contraseña</h2>
+
+    <div id="message" class="message"></div>
+
+    <form action="/forgot-password" method="POST">
+      <input type="email" name="email" placeholder="Introduce tu correo" required />
+      <button type="submit">Enviar enlace de reinicio</button>
+    </form>
+
+    <a href="/">Volver</a>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const messageDiv = document.getElementById('message');
+      
+      if (params.has('error')) {
+        const errorCode = params.get('error');
+        messageDiv.textContent = mostrarMensajeError(errorCode);
+        messageDiv.classList.add('error');
+        messageDiv.style.display = 'block';
+      }
+
+      if (params.get('success') === 'true') {
+        messageDiv.textContent = "¡Enlace de reinicio enviado! Revisa tu correo.";
+        messageDiv.classList.add('success');
+        messageDiv.style.display = 'block';
+      }
+    });
+
+    function mostrarMensajeError(errorCode) {
+      switch (errorCode) {
+        case 'notfound':
+          return 'Correo no existen en KayyShop.com';
+        case 'tokenfail':
+          return 'Ocurrió un problema al generar el token. Inténtalo de nuevo.';
+        case 'savefail':
+          return 'No se pudo guardar la información. Vuelve a intentarlo.';
+        case 'sendfail':
+          return 'No se pudo enviar el correo. Intenta más tarde.';
+        default:
+          return 'Ha ocurrido un error desconocido.';
+      }
+    }
+  </script>
+</body>
+</html>

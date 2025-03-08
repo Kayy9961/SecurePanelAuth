@@ -1,0 +1,3 @@
+-Antes de nada abre la terminal desde la ruta del .js y escribe "npm install express" 
+
+-Despues simplemente para iniciarlo "node server.js" listo, recuerda configurar todo el codigo

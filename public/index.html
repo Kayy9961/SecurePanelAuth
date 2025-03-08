@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KayyShop - Neon Dark Login/Registro</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
+    rel="stylesheet"
+  />
+  
+  <style>
+    :root {
+
+      --dark-start: #1c1c1c;
+      --dark-end: #242424; 
+      
+      --accent-color: #0060f8;      
+      --accent-hover: #003da9;      
+      --neon-color: #00ffc2;         
+      --neon-color-alt: #00ff95;     
+      
+      --text-color: #f2f2f2;
+      --subtext-color: #cccccc;
+      
+      --container-bg: rgba(30, 30, 30, 0.7); 
+      --wave-color: #2a2a2a;              
+      
+      --error-color: #ff4f4f;
+      --success-color: #49d295;
+      
+      --radius: 12px;
+      --shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+      --transition-speed: 0.4s;
+      --wave-speed: 25s; 
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--dark-start), var(--dark-end));
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+    }
+    .wave-top,
+    .wave-bottom {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      line-height: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .wave-top {
+      top: 0;
+      transform: rotate(180deg);
+    }
+
+    .wave-bottom {
+      bottom: 0;
+    }
+
+    .wave-top svg,
+    .wave-bottom svg {
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 180px;
+      animation: waveMotion var(--wave-speed) linear infinite;
+    }
+
+    @keyframes waveMotion {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2; 
+      width: 420px;
+      padding: 2rem;
+      border-radius: var(--radius);
+      background: var(--container-bg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      animation: fadeInUp var(--transition-speed) ease forwards;
+      
+      border: 1px solid transparent;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+      
+      text-shadow:
+        0 0 5px var(--neon-color),
+        0 0 10px var(--neon-color),
+        0 0 20px var(--neon-color);
+    }
+    
+    .container:hover {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px var(--accent-color), 0 0 30px var(--accent-color);
+      transition: box-shadow var(--transition-speed);
+    }
+
+    #message {
+      display: none;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .error {
+      color: var(--error-color);
+    }
+    .success {
+      color: var(--success-color);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid #444;
+      font-size: 1rem;
+      background-color: #2e2e2e;
+      color: var(--text-color);
+      transition: border var(--transition-speed), box-shadow var(--transition-speed);
+    }
+
+    input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 6px rgba(0, 96, 248, 0.4);
+      outline: none;
+    }
+
+    button {
+      padding: 0.75rem;
+      background: var(--accent-color);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background var(--transition-speed), box-shadow var(--transition-speed);
+      font-weight: 500;
+      box-shadow: 0 0 5px var(--accent-color);
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+    }
+
+    .toggle-link,
+    .forgot-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      color: var(--accent-color);
+      transition: color var(--transition-speed);
+      cursor: pointer;
+    }
+
+    .toggle-link:hover,
+    .forgot-link:hover {
+      color: var(--accent-hover);
+    }
+
+    #register-form {
+      display: none;
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity var(--transition-speed) ease;
+    }
+    .fade-in {
+      opacity: 1;
+      transition: opacity var(--transition-speed) ease;
+    }
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+        margin: 1rem;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="wave-top">
+    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+      <path
+        d="M0.00,49.98 C160.00,150.63 338.32,-30.67 500,90.00 L500.00,0.00 L0.00,0.00 Z"
+        style="fill: var(--wave-color);"
+      ></path>
+    </svg>
+  </div>
+  <div class="container" id="auth-container">
+    <div id="message"></div>
+
+    <div id="login-form" class="fade-in">
+      <h2>Iniciar Sesión</h2>
+      <form id="loginForm" action="/login" method="POST">
+        <input
+          type="text"
+          name="username"
+          placeholder="Usuario"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          required
+        />
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div
+        class="forgot-link"
+        onclick="location.href='/forgot-password'"
+      >
+        ¿Olvidaste tu contraseña?
+      </div>
+
+      <div class="toggle-link" onclick="toggleForms()">
+        ¿No tienes cuenta? Regístrate
+      </div>
+      <div class="toggle-link" onclick="location.href='/admin-login'">
+        ¿Eres administrador?
+      </div>
+    </div>
+    <div id="register-form" class="fade-in">
+      <h2>Registrarse</h2>
+      <form action="/register" method="POST">
+        <input
+          type="text"
+          name="username"
+          placeholder="Usuario"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          required
+        />
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="Confirmar contraseña"
+          required
+        />
+        <button type="submit">Registrar</button>
+      </form>
+      <div class="toggle-link" onclick="toggleForms()">
+        ¿Ya tienes cuenta? Inicia Sesión
+      </div>
+    </div>
+  </div>
+  <div class="wave-bottom">
+    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+      <path
+        d="M0.00,49.98 C160.00,150.63 338.32,-30.67 500,90.00 L500.00,0.00 L0.00,0.00 Z"
+        style="fill: var(--wave-color);"
+      ></path>
+    </svg>
+  </div>
+  <script>
+    function toggleForms() {
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+
+      if (loginForm.style.display !== "none") {
+        loginForm.classList.remove("fade-in");
+        loginForm.classList.add("fade-out");
+        setTimeout(() => {
+          loginForm.style.display = "none";
+          registerForm.style.display = "block";
+          registerForm.classList.remove("fade-out");
+          registerForm.classList.add("fade-in");
+        }, 400);
+      } else {
+        registerForm.classList.remove("fade-in");
+        registerForm.classList.add("fade-out");
+        setTimeout(() => {
+          registerForm.style.display = "none";
+          loginForm.style.display = "block";
+          loginForm.classList.remove("fade-out");
+          loginForm.classList.add("fade-in");
+        }, 400);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const msgDiv = document.getElementById('message');
+      if (!msgDiv) return;
+      
+      if (params.get('error') === 'invalid') {
+        msgDiv.textContent = 'Credenciales inválidas, inténtalo de nuevo.';
+        msgDiv.classList.add('error');
+        msgDiv.style.display = 'block';
+      }
+      if (params.get('error') === 'banned') {
+        msgDiv.textContent = 'Tu cuenta ha sido baneada. Contacta al administrador.';
+        msgDiv.classList.add('error');
+        msgDiv.style.display = 'block';
+      }
+      if (params.get('error') === 'mismatch') {
+        msgDiv.textContent = 'Las contraseñas no coinciden.';
+        msgDiv.classList.add('error');
+        msgDiv.style.display = 'block';
+        toggleForms();
+      }
+      if (params.get('error') === 'hashfail') {
+        msgDiv.textContent = 'Error al procesar tu contraseña. Intenta de nuevo.';
+        msgDiv.classList.add('error');
+        msgDiv.style.display = 'block';
+        toggleForms();
+      }
+      if (params.get('error') === 'registerfail') {
+        msgDiv.textContent = 'Usuario/Correo ya existente. Prueba con otros.';
+        msgDiv.classList.add('error');
+        msgDiv.style.display = 'block';
+        toggleForms();
+      }
+      if (params.get('success') === 'registered') {
+        msgDiv.textContent = '¡Cuenta creada con éxito! Ahora inicia sesión.';
+        msgDiv.classList.add('success');
+        msgDiv.style.display = 'block';
+      }
+    });
+
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", function () {
+        const msgDiv = document.getElementById('message');
+        if (msgDiv) {
+          msgDiv.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

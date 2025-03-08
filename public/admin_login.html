@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar Sesión - Administrador</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --color-primary: #4c76e2;
+      --color-secondary: #49d295; 
+      --bg-gradient: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      --bg-glass: rgba(255, 255, 255, 0.2);
+      --error-color: #ff4f4f;
+      --radius: 12px;
+      --transition-speed: 0.4s;
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wave-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .wave-container svg {
+      width: calc(100% + 1.3px);
+      height: 160px;
+      display: block;
+    }
+    .wave-fill {
+      fill: #fff;
+    }
+
+    .admin-login-container {
+      position: relative;
+      z-index: 10;
+      width: 400px;
+      padding: 2rem;
+      background: var(--bg-glass);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      animation: slideInUp var(--transition-speed) ease forwards;
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .error-message {
+      text-align: center;
+      color: var(--error-color);
+      margin-bottom: 1rem;
+      display: none; 
+      font-weight: 500;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #fff;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.7);
+      transition: border var(--transition-speed), box-shadow var(--transition-speed);
+      color: #333;
+    }
+
+    input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 6px rgba(76, 118, 226, 0.3);
+      outline: none;
+    }
+
+    button {
+      padding: 0.75rem;
+      background: var(--color-primary);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background var(--transition-speed), box-shadow var(--transition-speed);
+      font-weight: 500;
+    }
+
+    button:hover {
+      background: var(--color-secondary);
+      box-shadow: 0 0 10px rgba(73, 210, 149, 0.5);
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #fff;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      transition: color var(--transition-speed);
+      cursor: pointer;
+    }
+    .back-link:hover {
+      color: #e5e5e5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wave-container">
+    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+      <path class="wave-fill"
+        d="M0.00,49.98 C161.87,140.63 337.44,-35.67 504.71,102.39 L500.00,150.00 L0.00,150.00 Z">
+      </path>
+    </svg>
+  </div>
+
+  <div class="admin-login-container">
+    <h2>Login de Administrador</h2>
+    <div id="error-message" class="error-message">
+    </div>
+
+    <form action="/admin-login" method="POST">
+      <input type="text" name="user" placeholder="Usuario Admin" required />
+      <input type="password" name="password" placeholder="Contraseña" required />
+      <button type="submit">Entrar</button>
+    </form>
+
+    <div class="back-link" onclick="location.href='/'">Volver al Inicio</div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const errorMsgDiv = document.getElementById('error-message');
+
+      if (params.get('error') === 'invalid') {
+        errorMsgDiv.textContent = 'Eres tonto o que? no ves que es solo administradores pringao';
+        errorMsgDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

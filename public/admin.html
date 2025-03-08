@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel de Administración</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(120deg, #4c76e2, #49d295);
+      --glass-bg: rgba(255, 255, 255, 0.2);
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      --radius: 12px;
+      --transition-speed: 0.3s;
+      --table-head-bg: rgba(255, 255, 255, 0.3);
+      --table-border-color: rgba(255, 255, 255, 0.2);
+      --text-color: #fff;
+      --danger-color: #dc3545;
+      --hover-opacity: 0.8;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn var(--transition-speed) ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header-container {
+      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      background: var(--danger-color);
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      margin-top: 1rem;
+      display: inline-block;
+      transition: opacity var(--transition-speed);
+    }
+
+    .logout-btn:hover {
+      opacity: var(--hover-opacity);
+    }
+
+    .admin-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 900px;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      color: var(--text-color);
+    }
+
+    thead tr {
+      background: var(--table-head-bg);
+    }
+
+    th,
+    td {
+      padding: 0.75rem;
+      border: 1px solid var(--table-border-color);
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+    }
+    button {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity var(--transition-speed);
+    }
+
+    button:hover {
+      opacity: var(--hover-opacity);
+    }
+    .status-banned {
+      color: #ff4f4f;
+      font-weight: 600;
+    }
+    .status-active {
+      color: #49d295;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-container">
+    <h1>Panel de Administración</h1>
+    <a class="logout-btn" href="/logout-admin">Cerrar sesión admin</a>
+  </div>
+
+  <div class="admin-container">
+    <table id="usersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/admin/data');
+        if (!response.ok) {
+          throw new Error('No se pudo obtener la lista de usuarios (¿Estás logueado como admin?)');
+        }
+        const users = await response.json();
+        renderUsers(users);
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+
+    function renderUsers(users) {
+      const tbody = document.querySelector('#usersTable tbody');
+      tbody.innerHTML = ''; 
+
+      users.forEach(user => {
+        const tr = document.createElement('tr');
+
+        const tdId = document.createElement('td');
+        tdId.textContent = user.id;
+        tr.appendChild(tdId);
+
+        const tdUser = document.createElement('td');
+        tdUser.textContent = user.username;
+        tr.appendChild(tdUser);
+
+        const tdEmail = document.createElement('td');
+        tdEmail.textContent = user.email;
+        tr.appendChild(tdEmail);
+
+        const tdStatus = document.createElement('td');
+        if (user.banned) {
+          tdStatus.textContent = 'BANEADO';
+          tdStatus.classList.add('status-banned');
+        } else {
+          tdStatus.textContent = 'ACTIVO';
+          tdStatus.classList.add('status-active');
+        }
+        tr.appendChild(tdStatus);
+
+        const tdAction = document.createElement('td');
+        const btn = document.createElement('button');
+        btn.style.background = user.banned ? '#49d295' : '#ff4f4f';
+        btn.style.color = '#fff';
+
+        if (user.banned) {
+          btn.textContent = 'Desbanear';
+          btn.addEventListener('click', () => unbanUser(user.id));
+        } else {
+          btn.textContent = 'Banear';
+          btn.addEventListener('click', () => banUser(user.id));
+        }
+
+        tdAction.appendChild(btn);
+        tr.appendChild(tdAction);
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function banUser(userId) {
+      if (!confirm('¿Seguro que deseas banear a este usuario?')) return;
+      try {
+        const response = await fetch(`/admin/ban/${userId}`, { method: 'POST' });
+        if (!response.ok) {
+          throw new Error('Error al banear');
+        }
+        const users = await (await fetch('/admin/data')).json();
+        renderUsers(users);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function unbanUser(userId) {
+      if (!confirm('¿Seguro que deseas desbanear a este usuario?')) return;
+      try {
+        const response = await fetch(`/admin/unban/${userId}`, { method: 'POST' });
+        if (!response.ok) {
+          throw new Error('Error al desbanear');
+        }
+        const users = await (await fetch('/admin/data')).json();
+        renderUsers(users);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+  </script>
+</body>
+</html>
